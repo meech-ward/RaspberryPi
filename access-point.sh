@@ -1,5 +1,9 @@
 #!/bin/bash
 
+apt-get -y update
+apt-get -y upgrade
+apt-get -y dist-upgrade
+
 # Based on https://somesquares.org/blog/2017/10/Raspberry-Pi-router/
 
 SSID="MY-NETWORK"
@@ -34,7 +38,7 @@ rsn_pairwise=CCMP
 EOM
 # driver=nl80211
 
-HOSTAPD_DEFAULTS_FILE="/etc/defaults/hostapd"
+HOSTAPD_DEFAULTS_FILE="/etc/default/hostapd"
 
 echo "DAEMON_CONF=\"/etc/hostapd/hostapd.conf\"" >> $HOSTAPD_DEFAULTS_FILE
 
@@ -47,18 +51,18 @@ DHCPCD_CONF_FILE="/etc/dhcpcd.conf"
 
 cat >> $DHCPCD_CONF_FILE <<- EOM
 interface wlan0
-static ip_address=192.168.1.1
-static routers=192.168.1.1
+static ip_address=192.168.2.2
+static routers=192.168.2.2
 static domain_name_servers=8.8.8.8
 EOM
 
 DNSMASQ_CONF_FILE="/etc/dnsmasq.conf"
 
-cat >> $DHCPCD_CONF_FILE <<- EOM
+cat >> $DNSMASQ_CONF_FILE <<- EOM
 interface=wlan0
 domain-needed
 bogus-priv
-dhcp-range=192.168.1.8,192.168.1.250,12h
+dhcp-range=192.168.2.1,192.168.2.250,12h
 EOM
 
 # Configure IP routing
